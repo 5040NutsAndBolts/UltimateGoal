@@ -37,6 +37,17 @@ import static java.lang.Math.abs;
  */
 public class Hardware {
 
+    public enum SelectedGoal
+    {
+
+        HIGHGOAL,
+        MIDGOAL,
+        LOWGOAL,
+        POWERSHOTONE,
+        POWERSHOTTWO,
+        POWERSHOTTHREE
+
+    }
 
     //Positions of the odometry wheels
     public ThreeTrackingWheelLocalizer odom = new ThreeTrackingWheelLocalizer(
@@ -68,12 +79,12 @@ public class Hardware {
     //Distance from the center of the t to the launch mechanism in inches.
     public static final double distCenterToLaunch = 8;
     //Gravitational constant used for calculating ring launch angle in inches per second squared
-    private static final double ringGravitationalConstant = -386.09;
+    private static final double ringGravitationalConstant = 386.09;
     //Radius of flyWheels in inches
     private static final double flyWheelRadius = 1.5;
 
-    // Robot physical location]
-    public double x, y, theta;
+    // Robot physical location
+    public static double x, y, theta;
 
     //Robot velocity
     public double xVelocity, yVelocity, thetaVelocity;
@@ -175,6 +186,7 @@ public class Hardware {
         //Flywheels
         flywheelMotorLeft = hwMap.get(DcMotorEx.class,"flywheelMotorLeft");
         flywheelMotorRight = hwMap.get(DcMotorEx.class,"flywheelMotorRight");
+        flywheelMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Wobble goal Servo setup
         //leftWobbleGoal = hwMap.servo.get("leftWobbleGoal");
@@ -186,7 +198,7 @@ public class Hardware {
 
         //flywheel rotating
         flywheelRotateServoLeft = hwMap.servo.get("flywheelRotateServoLeft");
-        flywheelRotateServoLeft.setPosition(.95);
+        flywheelRotateServoLeft.setPosition(.9);
 
         //claw servos
         //clawServoLeft = hwMap.servo.get("clawServoLeft");
@@ -194,10 +206,15 @@ public class Hardware {
 
         flicker = hwMap.servo.get("flicker");
 
-        flicker.setPosition(1);
-
         e = new ElapsedTime();
         e.startTime();
+
+    }
+
+    public void initServos()
+    {
+
+        flicker.setPosition(1);
 
     }
 
@@ -222,12 +239,8 @@ public class Hardware {
 
         // Update real world distance traveled by the odometry wheels, regardless of orientation
 
-        leftOdomTraveled += deltaLeftDist*1;
-
-        if(deltaRightDist<0)
-            rightOdomTraveled += deltaRightDist*1;
-        else
-            rightOdomTraveled += deltaRightDist;
+        leftOdomTraveled += deltaLeftDist*1.01;
+        rightOdomTraveled += deltaRightDist;
         centerOdomTraveled += deltaCenterDist;
         double lastX = x;
         double lastY = y;
@@ -308,6 +321,18 @@ public class Hardware {
 
         flywheelMotorLeft.setPower(power);
         flywheelMotorRight.setPower(power);
+
+    }
+
+    /**
+     * Sets the velocity of the fly wheels
+     * @Param velocity velocity to run the fly wheels at in RPM (RPM of the motor with not including gearing)
+     * */
+    public void setFlyWheelVelocity(double velocity)
+    {
+
+        flywheelMotorLeft.setVelocity(velocity);
+        flywheelMotorRight.setVelocity(velocity);
 
     }
 
@@ -417,7 +442,7 @@ public class Hardware {
                     flicker.setPosition(1);
                     e = new ElapsedTime();
                     e.startTime();
-                    while(e.milliseconds()<200);
+                    while(e.milliseconds()<220);
                     isFlickerMoving=false;
                     if(queuedFlicks>0)
                     {
@@ -440,6 +465,66 @@ public class Hardware {
 
         }
 
+
+    }
+
+
+    /**
+     * Calculates an angle to launch rings at so they will hit a specified game target (assuming the robot turns to face the target)
+     *
+     * @param goal which of the targets to aim rings at
+     * @return An array containing two double. The first double being angle which, if rings are launched at with the correct velocity when facing a target, will hit that target at the top of their parabola, and the second double being said velocity.
+     * */
+    public double[] getFlyWheelAngle(SelectedGoal goal)
+    {
+
+        //set the x, y, and z of the target to shoot rings at
+        double zGoal=0;
+        double xGoal=0;
+        double yGoal=0;
+        switch(goal)
+        {
+
+            case LOWGOAL:
+                xGoal=-144;
+                yGoal=-36;
+                zGoal=17;
+                break;
+            case MIDGOAL:
+                xGoal=-144;
+                yGoal=-36;
+                zGoal=27.0625;
+                break;
+            case HIGHGOAL:
+                xGoal=-144;
+                yGoal=-36;
+                zGoal=35.875;
+                break;
+            case POWERSHOTONE:
+                xGoal=-144;
+                yGoal=-54;
+                zGoal=30.875;
+                break;
+            case POWERSHOTTWO:
+                xGoal=-144;
+                yGoal=-61.5;
+                zGoal=30.875;
+                break;
+            case POWERSHOTTHREE:
+                x=-144;
+                yGoal=-69;
+                zGoal=30.875;
+                break;
+
+        }
+
+        //calculate what the distance from the launch mech to the goal will be after the robot has turned to face the goal
+        double distance = Math.sqrt(Math.pow(x-xGoal,2)+Math.pow(y-yGoal,2))-distCenterToLaunch;
+        //return the angle to launch rings
+        double angle = Math.atan(2*zGoal/distance);
+        double velocity = distance/Math.cos(angle)*Math.sqrt(ringGravitationalConstant/(2*(distance*Math.tan(angle)-zGoal)));
+
+        return new double[]{angle,velocity};
 
     }
 

@@ -8,7 +8,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.helperclasses.HelperMethods;
+import org.firstinspires.ftc.teamcode.helperclasses.LQR;
 import org.firstinspires.ftc.teamcode.helperclasses.ThreadPool;
+
+import java.io.IOException;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -24,15 +27,43 @@ public class Teleop extends LinearOpMode
 
         Hardware robot = new Hardware();
         robot.init(hardwareMap);
+        final LQR lqr = new LQR(robot);
+        Thread t = new Thread()
+        {
+
+            @Override
+            public void run()
+            {
+
+                try
+                {
+                    LQR.path=lqr.loadPath("/teleopFire.txt");
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+
+            }
+
+        };
+        if(LQR.path == null)
+            ThreadPool.pool.submit(t);
         waitForStart();
+        robot.initServos();
         boolean a2Pressed=false;
         boolean a1Pressed = true;
         boolean y2Pressed=false;
         boolean b1Pressed = false;
+        boolean x1Pressed=false;
         boolean upPressed=false;
         boolean downPressed=false;
         boolean autoAim=false;
         boolean slowDrive = false;
+        boolean autoShoot = false;
+        boolean autoShooting = false;
         double forward=1;
         double angleSpeed=.2;
         double servoPosition =1;
@@ -41,12 +72,16 @@ public class Teleop extends LinearOpMode
         double leftSub = 0;
         double rightSub = 0;
         double centerSub=0;
-
         double driveSpeed=1;
+
+
+
+        robot.resetOdometry(-9,-9,0);
         while(opModeIsActive())
         {
 
             robot.updatePositionRoadRunner();
+            double[] autoLaunch = robot.getFlyWheelAngle(Hardware.SelectedGoal.HIGHGOAL);
             //set drive speed
             if(slowDrive)
                 driveSpeed=.3;
@@ -54,11 +89,71 @@ public class Teleop extends LinearOpMode
                 driveSpeed=1;
 
             //automatically aim  at goal
-            if(autoAim)
+            if(autoShoot)
+            {
+
+                double x = Hardware.x+144;
+                double y = Hardware.y+36;
+                double magnitude = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
+                double xUnit = x/magnitude;
+                double yUnit = y/magnitude;
+                double xGoal = -144+xUnit*80;
+                double yGoal = -36+yUnit*80;
+                servoPosition=1+((autoLaunch[0]*180/Math.PI-3.1634748)/-68.3652519934);
+                robot.setFlyWheelVelocity(autoLaunch[1]*10.0267614*1.06);
+
+                if(xGoal<-70)
+                {
+                    xGoal =-70;
+                    if(robot.x<-33.47883)
+                        yGoal=-66.3974;
+                    else
+                        yGoal=-5.6026;
+                }
+
+                double thetaGoal=Math.atan((36-3+Hardware.y)/(146+Hardware.x));
+                if(thetaGoal<0)
+                    thetaGoal+=2*Math.PI;
+                double diff=thetaGoal-Hardware.theta;
+                if(diff<0)
+                    diff+=2*Math.PI;
+                if(diff>Math.PI)
+                    diff=Math.PI*2-diff;
+
+                telemetry.addData("goals",xGoal+" "+yGoal+" "+diff+" "+thetaGoal);
+
+                if(lqr.robotInCircle(xGoal,yGoal,1.5)&&Math.abs(diff)<.06)
+                {
+
+                    lqr.runLqrDrive(LQR.path, Hardware.x, Hardware.y, thetaGoal);
+                    telemetry.addData("goal velocity",autoLaunch[ 1 ] * 10.0267614 * 1.045);
+                    if (robot.flywheelMotorRight.getVelocity() >= autoLaunch[ 1 ] * 10.0267614 * 1.045)
+                    {
+
+
+                        if (!autoShooting)
+                        {
+                            robot.flickRing();
+                            robot.queuedFlicks = 2;
+                        }
+                        autoShooting = true;
+
+
+
+
+                    }
+                }
+                else
+                {
+                    lqr.runLqrDrive(LQR.path, xGoal, yGoal, thetaGoal);
+                }
+
+            }
+            else if(autoAim)
             {
 
                 byte sign = 1;
-                double diff = robot.theta-Math.atan((50+robot.y)/(9-robot.x))*.8;
+                double diff = Hardware.theta-Math.atan((36-9+Hardware.y)/(144-9+Hardware.x));
                 if(diff<0)
                     diff+=2*Math.PI;
                 if(diff>Math.PI)
@@ -74,9 +169,10 @@ public class Teleop extends LinearOpMode
             }
             else
                 robot.drive(forward*driveSpeed*gamepad1.left_stick_y,driveSpeed*gamepad1.left_stick_x,driveSpeed*gamepad1.right_stick_x);
-            telemetry.addData("x: ", robot.x);
-            telemetry.addData("y: ", robot.y);
-            telemetry.addData("theta: ", robot.theta);
+
+            telemetry.addData("x: ", Hardware.x);
+            telemetry.addData("y: ", Hardware.y);
+            telemetry.addData("theta: ", Hardware.theta);
             telemetry.addData("Auto Aim",autoAim);
             telemetry.addData("Slow Drive",slowDrive);
             telemetry.addData("angle speed",angleSpeed);
@@ -86,9 +182,10 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Left Speed", robot.flywheelMotorLeft.getVelocity());
             telemetry.addData("Right Speed", robot.flywheelMotorRight.getVelocity());
             telemetry.addData("Angle Servo",servoPosition);
+            telemetry.addData("Auto Angle",autoLaunch[0]*180/Math.PI);
             telemetry.update();
 
-            if(gamepad1.x)
+            if(gamepad1.left_bumper)
             {
 
                 leftSub=robot.odom.getWheelPositions().get(1);
@@ -97,7 +194,7 @@ public class Teleop extends LinearOpMode
 
             }
 
-            if(gamepad1.a&&!a1Pressed)
+            if(gamepad1.a&&!a1Pressed&&!gamepad1.start)
             {
                 autoAim=!autoAim;
                 a1Pressed=true;
@@ -118,6 +215,19 @@ public class Teleop extends LinearOpMode
 
                 b1Pressed=false;
 
+            }
+
+            if(gamepad1.x&&!x1Pressed)
+            {
+
+                x1Pressed=true;
+                autoShoot=!autoShoot;
+                if(!autoShoot)
+                    autoShooting=false;
+
+            }else if(!gamepad1.x)
+            {
+                x1Pressed=false;
             }
 
             //flip direction of drive when dpad buttons are pressed
@@ -155,21 +265,23 @@ public class Teleop extends LinearOpMode
 
 
             //sets flywheel power to the left trigger
-            robot.setFlyWheelPower(gamepad2.right_trigger);
+            if(!gamepad2.right_bumper&&!autoShoot)
+                robot.setFlyWheelPower(gamepad2.right_trigger);
 
             //makes the flywheel rotation servo move with b and x
             if(Math.abs(gamepad2.left_stick_y)>.03)
-            servoPosition+=gamepad2.left_stick_y*angleSpeed/20;
+            servoPosition-=gamepad2.left_stick_y*angleSpeed/30;
 
-            if(servoPosition>1)
-                servoPosition=1;
+            if(gamepad2.left_bumper)
+                servoPosition=1+((autoLaunch[0]*180/Math.PI-3.1634748)/-68.3652519934);
+            if(gamepad2.right_bumper)
+                robot.setFlyWheelVelocity(autoLaunch[1]*10.0267614*1.06);
+            if(servoPosition>.9)
+                servoPosition=.9;
             else if(servoPosition<.17)
                 servoPosition=.17;
 
-
-
             robot.flywheelRotateServoLeft.setPosition(servoPosition);
-
 
 
             //launch a single ring if a is pressed and the flywheels are moving
