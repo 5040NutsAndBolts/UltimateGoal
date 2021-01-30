@@ -428,7 +428,7 @@ public class Hardware {
     public void clawServoLeftClose() {clawServoLeft.setPosition(1);}
 
     //lowers left claw
-    public void clawServoLeftOpen() {clawServoLeft.setPosition(.6);}
+    public void clawServoLeftOpen() {clawServoLeft.setPosition(.4);}
 
     //raises right claw
     public void clawServoRightClose() {clawServoRight.setPosition(1);}
