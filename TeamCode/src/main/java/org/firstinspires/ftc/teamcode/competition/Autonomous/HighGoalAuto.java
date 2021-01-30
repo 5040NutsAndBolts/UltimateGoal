@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
-@Autonomous(name = "Scrimmage Auto", group = "Auto")
+@Autonomous(name = "Auto", group = "Auto")
 public class HighGoalAuto extends LinearOpMode
 {
 
@@ -115,6 +115,28 @@ public class HighGoalAuto extends LinearOpMode
 0 0 0 150
         * */
         double[][][] park = {{{}}};
+/*
+* 0 0 0 1 0 0
+0 0 0 0 1 0
+0 0 0 0 0 1
+0 0 0 0 0 0
+0 0 0 0 0 0
+0 0 0 0 0 0
+
+.5 0 0 0 0 0
+0 .5 0 0 0 0
+0 0 .5 0 0 0
+0 0 0 .01 0 0
+0 0 0 0 .01 0
+0 0 0 0 0 .01
+
+15 0 0 0
+0 15 0 0
+0 0 15 0
+0 0 0 15
+*
+* */
+        double[][][] wobble4={{{}}};
         try
         {
 
@@ -128,6 +150,7 @@ public class HighGoalAuto extends LinearOpMode
             path = lqr.loadPath("/lqrTestData.txt");
 
             wobble = lqr.loadPath("/wobble.txt");
+            wobble4 = lqr.loadPath("/wobble4.txt");
             grabWobble2=lqr.loadPath("/wobbleGrab2.txt");
             park = lqr.loadPath("/park.txt");
 
@@ -210,7 +233,7 @@ public class HighGoalAuto extends LinearOpMode
         {
             wobbleX=-75.5;
             wobbleY=3.25;
-            wobbleRadius=.8;
+            wobbleRadius=.6;
 
 
         }else if(auto==4)
@@ -218,7 +241,7 @@ public class HighGoalAuto extends LinearOpMode
 
             wobbleX=-111.25;
             wobbleY=3.25;
-            wobbleRadius=.8;
+            wobbleRadius=.6;
 
         }
         else
@@ -226,7 +249,7 @@ public class HighGoalAuto extends LinearOpMode
 
             wobbleX=-100;
             wobbleY=-17;
-            wobbleRadius=.8;
+            wobbleRadius=.6;
 
 
         }
@@ -264,9 +287,40 @@ public class HighGoalAuto extends LinearOpMode
                 }
 
             }
-
-        while(opModeIsActive()&&!lqr.robotInCircle(wobbleX,wobbleY,wobbleRadius))
+        if(auto==4)
         {
+
+            while(opModeIsActive()&&!lqr.robotInCircle(wobbleX,wobbleY,wobbleRadius)&&robot.x>-75)
+            {
+
+                lqr.runLqrDrive(wobble,wobbleX,wobbleY,0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.addData("Goals",wobbleX+" "+wobbleY+" "+wobbleRadius);
+                telemetry.update();
+                if(robot.x<-40)
+                    robot.leftWobbleGoal.setPosition(.5);
+
+            }
+            while(opModeIsActive()&&!lqr.robotInCircle(wobbleX,wobbleY,wobbleRadius))
+            {
+
+                lqr.runLqrDrive(wobble4,wobbleX,wobbleY,0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.addData("Goals",wobbleX+" "+wobbleY+" "+wobbleRadius);
+                telemetry.update();
+                if(robot.x<-40)
+                    robot.leftWobbleGoal.setPosition(.5);
+
+            }
+
+        }
+        else
+            while(opModeIsActive()&&!lqr.robotInCircle(wobbleX,wobbleY,wobbleRadius))
+            {
 
             lqr.runLqrDrive(wobble,wobbleX,wobbleY,0);
             telemetry.addData("x: ", Hardware.x);
@@ -277,7 +331,7 @@ public class HighGoalAuto extends LinearOpMode
             if(robot.x<-40)
                 robot.leftWobbleGoal.setPosition(.5);
 
-        }
+            }
         robot.hardBrakeMotors();
         robot.leftWobbleGoalDown();
         e.reset();
@@ -334,7 +388,7 @@ public class HighGoalAuto extends LinearOpMode
         }
         e.reset();
         e.startTime();
-        while(e.seconds()<1&&opModeIsActive()){robot.setFlyWheelVelocity(2450);}
+        while(e.seconds()<1&&opModeIsActive()){robot.setFlyWheelVelocity(2400);}
         robot.setFlyWheelPower(0);
 
 
@@ -343,10 +397,10 @@ public class HighGoalAuto extends LinearOpMode
 
 
         e.reset();
-        while(opModeIsActive()&&!lqr.robotInCircle(-25,-61,5))
+        while(opModeIsActive()&&!lqr.robotInCircle(-25,-61,18))
                 {
 
-                    lqr.runLqrDrive(path,-25,-61,0);
+                    lqr.runLqrDrive(grabWobble2,-25,-61,0);
                     telemetry.addData("x: ", Hardware.x);
                     telemetry.addData("y: ", Hardware.y);
                     telemetry.addData("theta: ", Hardware.theta);
@@ -359,10 +413,10 @@ public class HighGoalAuto extends LinearOpMode
                     }
 
                 }
-        while(opModeIsActive()&&!lqr.robotInCircle(-14,-50,.4))
+        while(opModeIsActive()&&!lqr.robotInCircle(-16.5,-50,.4))
         {
 
-            lqr.runLqrDrive(path,-14,-50,0);
+            lqr.runLqrDrive(path,-16.5,-50,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
