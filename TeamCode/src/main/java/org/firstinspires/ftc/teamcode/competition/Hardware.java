@@ -9,13 +9,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cController;
+import com.qualcomm.robotcore.hardware.I2cControllerPortDeviceImpl;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.helperclasses.ThreadPool;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -125,6 +130,7 @@ public class Hardware {
     //Fly wheels
     public DcMotorEx flywheelMotorLeft;
     public DcMotorEx flywheelMotorRight;
+    DigitalChannelImpl digitalChannel;
 
     //Servo to move rind from magazine into flywheels
     public Servo flicker;
@@ -137,6 +143,11 @@ public class Hardware {
 
     // Real world distance traveled by the wheels
     public double leftOdomTraveled, rightOdomTraveled, centerOdomTraveled;
+
+    //Webcam
+    public WebcamName webcam;
+    //Tensorflow
+    public int tfodMonitorViewId;
 
     double lastTime = 0;
 
@@ -189,7 +200,7 @@ public class Hardware {
         flywheelMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Wobble goal Servo setup
-        //leftWobbleGoal = hwMap.servo.get("leftWobbleGoal");
+        leftWobbleGoal = hwMap.servo.get("leftWobbleGoal");
         //rightWobbleGoal = hwMap.servo.get("rightWobbleGoal");
 
         //Intake
@@ -201,10 +212,17 @@ public class Hardware {
         flywheelRotateServoLeft.setPosition(.9);
 
         //claw servos
-        //clawServoLeft = hwMap.servo.get("clawServoLeft");
+        clawServoLeft = hwMap.servo.get("clawServoLeft");
         //clawServoRight = hwMap.servo.get("clawServoRight");
 
         flicker = hwMap.servo.get("flicker");
+
+        //Webcam
+        webcam = hwMap.get(WebcamName .class, "Webcam 1");
+
+        //tensorflow object detection
+        tfodMonitorViewId = hwMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hwMap.appContext.getPackageName());
 
         e = new ElapsedTime();
         e.startTime();
@@ -378,7 +396,7 @@ public class Hardware {
     */
     public void leftWobbleGoalUp()
     {
-        leftWobbleGoal.setPosition(1);
+        leftWobbleGoal.setPosition(0);
     }
 
     /**
@@ -394,7 +412,7 @@ public class Hardware {
      */
     public void leftWobbleGoalDown()
     {
-        leftWobbleGoal.setPosition(0);
+        leftWobbleGoal.setPosition(.9);
     }
 
     /**
@@ -405,19 +423,19 @@ public class Hardware {
         rightWobbleGoal.setPosition(0);
     }
 
-    /*
+
     //raises left claw
-    public void clawServoLeftUp() {clawServoLeft.setPosition(1);}
+    public void clawServoLeftClose() {clawServoLeft.setPosition(1);}
 
     //lowers left claw
-    public void clawServoLeftDown() {clawServoLeft.setPosition(0);}
+    public void clawServoLeftOpen() {clawServoLeft.setPosition(.6);}
 
     //raises right claw
-    public void clawServoRightUp() {clawServoRight.setPosition(1);}
+    public void clawServoRightClose() {clawServoRight.setPosition(1);}
 
     //lowers right claw
-    public void clawServoRightDown() {clawServoLeft.setPosition(0);}
-    */
+    public void clawServoRightOpen() {clawServoLeft.setPosition(0);}
+
 
 
 
@@ -466,6 +484,29 @@ public class Hardware {
         }
 
 
+    }
+
+    /**
+     * Brakes the motors so robot can't move
+     */
+    public void hardBrakeMotors() {
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive(0,0,0);
+    }
+
+    /**
+     * Sets the zero power behavior to not brake the motors
+     * Used during autonomous to make the robot easier to move
+     */
+    public void softBrakeMotors() {
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        drive(0,0,0);
     }
 
 
@@ -524,7 +565,7 @@ public class Hardware {
         double angle = Math.atan(2*zGoal/distance);
         double velocity = distance/Math.cos(angle)*Math.sqrt(ringGravitationalConstant/(2*(distance*Math.tan(angle)-zGoal)));
 
-        return new double[]{angle,velocity};
+        return new double[]{angle*1.03,velocity/1.03};
 
     }
 

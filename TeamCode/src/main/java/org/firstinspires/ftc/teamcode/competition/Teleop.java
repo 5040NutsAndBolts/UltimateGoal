@@ -28,6 +28,27 @@ public class Teleop extends LinearOpMode
         Hardware robot = new Hardware();
         robot.init(hardwareMap);
         final LQR lqr = new LQR(robot);
+        /*
+0 0 0 1 0 0
+0 0 0 0 1 0
+0 0 0 0 0 1
+0 0 0 0 0 0
+0 0 0 0 0 0
+0 0 0 0 0 0
+
+.7 0 0 0 0 0
+0 1 0 0 0 0
+0 0 205 0 0 0
+0 0 0 .001 0 0
+0 0 0 0 .001 0
+0 0 0 0 0 .001
+
+15 0 0 0
+0 15 0 0
+0 0 15 0
+0 0 0 15
+        *
+        * */
         Thread t = new Thread()
         {
 
@@ -64,6 +85,10 @@ public class Teleop extends LinearOpMode
         boolean slowDrive = false;
         boolean autoShoot = false;
         boolean autoShooting = false;
+        boolean rBumper1Pressed = false;
+        boolean leftWobbleDown = false;
+        boolean leftClawOpen = false;
+        boolean lBumper1Pressed = false;
         double forward=1;
         double angleSpeed=.2;
         double servoPosition =1;
@@ -111,7 +136,8 @@ public class Teleop extends LinearOpMode
                         yGoal=-5.6026;
                 }
 
-                double thetaGoal=Math.atan((36-3+Hardware.y)/(146+Hardware.x));
+
+                double thetaGoal=Math.atan((36+Hardware.y)/(144+Hardware.x));
                 if(thetaGoal<0)
                     thetaGoal+=2*Math.PI;
                 double diff=thetaGoal-Hardware.theta;
@@ -122,12 +148,12 @@ public class Teleop extends LinearOpMode
 
                 telemetry.addData("goals",xGoal+" "+yGoal+" "+diff+" "+thetaGoal);
 
-                if(lqr.robotInCircle(xGoal,yGoal,1.5)&&Math.abs(diff)<.06)
+                if(lqr.robotInCircle(xGoal,yGoal,1)&&HelperMethods.nearAngle(Hardware.theta,thetaGoal,.01))
                 {
 
                     lqr.runLqrDrive(LQR.path, Hardware.x, Hardware.y, thetaGoal);
-                    telemetry.addData("goal velocity",autoLaunch[ 1 ] * 10.0267614 * 1.045);
-                    if (robot.flywheelMotorRight.getVelocity() >= autoLaunch[ 1 ] * 10.0267614 * 1.045)
+                    telemetry.addData("goal velocity",autoLaunch[ 1 ] * 10.0267614 * 1.05);
+                    if (robot.flywheelMotorRight.getVelocity() >= autoLaunch[ 1 ] * 10.0267614 * 1.05)
                     {
 
 
@@ -153,7 +179,7 @@ public class Teleop extends LinearOpMode
             {
 
                 byte sign = 1;
-                double diff = Hardware.theta-Math.atan((36-9+Hardware.y)/(144-9+Hardware.x));
+                double diff = Hardware.theta-Math.atan((29-9+Hardware.y)/(144-9+Hardware.x));
                 if(diff<0)
                     diff+=2*Math.PI;
                 if(diff>Math.PI)
@@ -193,6 +219,62 @@ public class Teleop extends LinearOpMode
                 centerSub = robot.odom.getWheelPositions().get(0);
 
             }
+
+            if(gamepad1.right_bumper&&!rBumper1Pressed)
+            {
+
+                rBumper1Pressed=true;
+                leftWobbleDown=!leftWobbleDown;
+
+            }
+            else if(!gamepad1.right_bumper)
+            {
+
+                rBumper1Pressed=false;
+
+            }
+
+            if(leftWobbleDown)
+                robot.leftWobbleGoalDown();
+            else
+                robot.leftWobbleGoalUp();
+            if(gamepad1.left_bumper&&!lBumper1Pressed)
+            {
+
+                lBumper1Pressed=true;
+                leftClawOpen=!leftClawOpen;
+
+            }
+            else if(!gamepad1.left_bumper)
+            {
+
+                lBumper1Pressed=false;
+
+            }
+
+            if(leftWobbleDown)
+                robot.leftWobbleGoalDown();
+            else
+                robot.leftWobbleGoalUp();
+
+            if(gamepad1.right_bumper&&!rBumper1Pressed)
+            {
+
+                rBumper1Pressed=true;
+                leftClawOpen=!leftClawOpen;
+
+            }
+            else if(!gamepad1.right_bumper)
+            {
+
+                rBumper1Pressed=false;
+
+            }
+
+            if(leftClawOpen)
+                robot.clawServoLeftOpen();
+            else
+                robot.clawServoLeftClose();
 
             if(gamepad1.a&&!a1Pressed&&!gamepad1.start)
             {
