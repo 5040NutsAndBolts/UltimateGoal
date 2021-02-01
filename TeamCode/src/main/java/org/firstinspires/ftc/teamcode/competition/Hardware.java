@@ -257,7 +257,16 @@ public class Hardware {
 
         // Update real world distance traveled by the odometry wheels, regardless of orientation
 
-        leftOdomTraveled += deltaLeftDist*1.01;
+        if(deltaLeftDist>0&&deltaRightDist<0)
+            deltaLeftDist*=1.01;
+        else if(deltaRightDist<0)
+            deltaRightDist*=1.02;
+        if(deltaRightDist>0&&deltaLeftDist<0)
+            deltaRightDist*=1.01;
+        else if(deltaLeftDist<0)
+            deltaLeftDist*=1.025;
+
+        leftOdomTraveled += deltaLeftDist;
         rightOdomTraveled += deltaRightDist;
         centerOdomTraveled += deltaCenterDist;
         double lastX = x;
@@ -396,7 +405,7 @@ public class Hardware {
     */
     public void leftWobbleGoalUp()
     {
-        leftWobbleGoal.setPosition(0);
+        leftWobbleGoal.setPosition(0.05);
     }
 
     /**
@@ -412,7 +421,7 @@ public class Hardware {
      */
     public void leftWobbleGoalDown()
     {
-        leftWobbleGoal.setPosition(.9);
+        leftWobbleGoal.setPosition(.75);
     }
 
     /**

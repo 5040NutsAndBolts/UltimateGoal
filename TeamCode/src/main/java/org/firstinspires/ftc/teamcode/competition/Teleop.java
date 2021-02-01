@@ -137,7 +137,7 @@ public class Teleop extends LinearOpMode
                 }
 
 
-                double thetaGoal=Math.atan((36+Hardware.y)/(144+Hardware.x));
+                double thetaGoal=Math.atan((36-8+Hardware.y)/(144-9+Hardware.x));
                 if(thetaGoal<0)
                     thetaGoal+=2*Math.PI;
                 double diff=thetaGoal-Hardware.theta;
@@ -179,7 +179,7 @@ public class Teleop extends LinearOpMode
             {
 
                 byte sign = 1;
-                double diff = Hardware.theta-Math.atan((29-9+Hardware.y)/(144-9+Hardware.x));
+                double diff = Hardware.theta-Math.atan((36+9+Hardware.y)/(144+9+Hardware.x));
                 if(diff<0)
                     diff+=2*Math.PI;
                 if(diff>Math.PI)
