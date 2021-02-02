@@ -88,7 +88,8 @@ public class Teleop extends LinearOpMode
         boolean rBumper1Pressed = false;
         boolean leftWobbleDown = false;
         boolean leftClawOpen = false;
-        boolean lBumper1Pressed = false;
+        boolean down2Pressed = false;
+        boolean up2Pressed = false;
         double forward=1;
         double angleSpeed=.2;
         double servoPosition =1;
@@ -220,35 +221,38 @@ public class Teleop extends LinearOpMode
 
             }
 
-            if(gamepad1.right_bumper&&!rBumper1Pressed)
+            if(gamepad2.dpad_up&&!up2Pressed)
             {
 
                 rBumper1Pressed=true;
                 leftWobbleDown=!leftWobbleDown;
 
             }
-            else if(!gamepad1.right_bumper)
+            else if(!gamepad2.dpad_up)
             {
 
-                rBumper1Pressed=false;
+                up2Pressed=false;
 
             }
 
             if(leftWobbleDown)
                 robot.leftWobbleGoalDown();
             else
+            {
                 robot.leftWobbleGoalUp();
-            if(gamepad1.left_bumper&&!lBumper1Pressed)
+                leftClawOpen=false;
+            }
+            if(gamepad2.dpad_down&&!down2Pressed)
             {
 
-                lBumper1Pressed=true;
+                down2Pressed=true;
                 leftClawOpen=!leftClawOpen;
 
             }
-            else if(!gamepad1.left_bumper)
+            else if(!gamepad2.dpad_down)
             {
 
-                lBumper1Pressed=false;
+                down2Pressed=false;
 
             }
 
