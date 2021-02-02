@@ -305,8 +305,8 @@ public class HighGoalAuto extends LinearOpMode
         }else if(auto==4)
         {
 
-            wobbleX=-116.5;
-            wobbleY=5;
+            wobbleX=-117;
+            wobbleY=6;
             wobbleRadius=2.5;
 
         }
@@ -402,13 +402,13 @@ public class HighGoalAuto extends LinearOpMode
         robot.leftWobbleGoalDown();
         e.reset();
         e.startTime();
-        while(e.seconds()<.4);
+        while(e.seconds()<1.2);
         robot.clawServoLeftOpen();
-        while(e.seconds()<1.4);
-        while(opModeIsActive()&&!lqr.robotInCircle(wobbleX,wobbleY-5,2))
+        while(e.seconds()<.2);
+        while(opModeIsActive()&&!lqr.robotInCircle(robot.x,wobbleY-5,2))
         {
 
-            lqr.runLqrDrive(wobble,wobbleX,wobbleY-5,0);
+            lqr.runLqrDrive(wobble,robot.x,wobbleY-5,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
@@ -470,7 +470,7 @@ public class HighGoalAuto extends LinearOpMode
         e.reset();
         e.startTime();
         robot.flywheelRotateServoLeft.setPosition(.7);
-        if(auto==4)
+        if(auto==4||auto==1)
         {
 
             while(e.seconds()<2.1)
@@ -509,10 +509,10 @@ public class HighGoalAuto extends LinearOpMode
                     }
 
                 }
-        while(opModeIsActive()&&!lqr.robotInCircle(-21.1,-48,.4))
+        while(opModeIsActive()&&!lqr.robotInCircle(-21.3,-48,.4))
         {
 
-            lqr.runLqrDrive(path,-21.1,-48,0);
+            lqr.runLqrDrive(path,-21.3,-48,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
@@ -522,11 +522,13 @@ public class HighGoalAuto extends LinearOpMode
         }
 
         robot.hardBrakeMotors();
+        e.reset();
+        while(e.seconds()<.2);
 
-        while(opModeIsActive()&&!lqr.robotInCircle(-21.1,-32.6,.8))
+        while(opModeIsActive()&&!lqr.robotInCircle(-21.3,-33,.8))
         {
 
-            lqr.runLqrDrive(ontoWobble2,-21.1,-32.6,0);
+            lqr.runLqrDrive(ontoWobble2,-21.3,-33,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
@@ -535,15 +537,14 @@ public class HighGoalAuto extends LinearOpMode
 
         }
         robot.hardBrakeMotors();
-        while(opModeIsActive()&&!lqr.robotInCircle(-21.1,-32.5,.8))
+        while(opModeIsActive()&&!lqr.robotInCircle(-21.3,-32,.8))
         {
 
-            lqr.runLqrDrive(ontoWobble2,-21.1,-32.5,0);
+            lqr.runLqrDrive(ontoWobble2,-21.3,-32,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
             telemetry.update();
-
 
         }
         robot.hardBrakeMotors();
@@ -553,7 +554,7 @@ public class HighGoalAuto extends LinearOpMode
         robot.setIntakePower(0);
         e.reset();
         while(e.seconds()<.5);
-        robot.leftWobbleGoalUp();
+        robot.leftWobbleGoal.setPosition(.5);
         e.reset();
         while(e.seconds()<.5);
         while(opModeIsActive()&&!lqr.robotInCircle(-51.1,-32,1))
@@ -567,10 +568,10 @@ public class HighGoalAuto extends LinearOpMode
 
 
         }
-        while(opModeIsActive()&&!lqr.robotInCircle(-116,-3,1))
+        while(opModeIsActive()&&!lqr.robotInCircle(-117,-3,2))
         {
 
-            lqr.runLqrDrive(ontoWobble2,-116,-3,0);
+            lqr.runLqrDrive(ontoWobble2,-117,-3,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);

@@ -258,11 +258,16 @@ public class Hardware {
         // Update real world distance traveled by the odometry wheels, regardless of orientation
 
         if(deltaLeftDist>0&&deltaRightDist<0)
-            deltaLeftDist*=1.01;
+        {
+            deltaRightDist *= 0.840336134*1.02*1.054;
+            deltaLeftDist*=1.02*1.054;
+        }
         else if(deltaRightDist<0)
             deltaRightDist*=1.02;
         if(deltaRightDist>0&&deltaLeftDist<0)
-            deltaRightDist*=1.01;
+        {
+            deltaLeftDist *= 0.970760234;
+        }
         else if(deltaLeftDist<0)
             deltaLeftDist*=1.025;
 

@@ -101,7 +101,7 @@ public class Teleop extends LinearOpMode
 
 
 
-        robot.resetOdometry(-9,-9,0);
+        robot.resetOdometry(Hardware.x,Hardware.y-15,0);
         while(opModeIsActive())
         {
 
@@ -137,7 +137,7 @@ public class Teleop extends LinearOpMode
                 }
 
 
-                double thetaGoal=Math.atan((36-8+Hardware.y)/(144-9+Hardware.x));
+                double thetaGoal=Math.atan((36-5+Hardware.y)/(144-5+Hardware.x));
                 if(thetaGoal<0)
                     thetaGoal+=2*Math.PI;
                 double diff=thetaGoal-Hardware.theta;
