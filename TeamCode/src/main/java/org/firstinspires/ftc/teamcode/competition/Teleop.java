@@ -224,7 +224,7 @@ public class Teleop extends LinearOpMode
             if(gamepad2.dpad_up&&!up2Pressed)
             {
 
-                rBumper1Pressed=true;
+                up2Pressed=true;
                 leftWobbleDown=!leftWobbleDown;
 
             }
