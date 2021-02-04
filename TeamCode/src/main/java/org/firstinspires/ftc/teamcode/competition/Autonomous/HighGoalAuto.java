@@ -537,10 +537,10 @@ public class HighGoalAuto extends LinearOpMode
 
         }
         robot.hardBrakeMotors();
-        while(opModeIsActive()&&!lqr.robotInCircle(-21.3,-32.5,.8))
+        while(opModeIsActive()&&!lqr.robotInCircle(-21.3,-32.9,.8))
         {
 
-            lqr.runLqrDrive(ontoWobble2,-21.3,-32.5,0);
+            lqr.runLqrDrive(ontoWobble2,-21.3,-32.9,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
@@ -557,10 +557,10 @@ public class HighGoalAuto extends LinearOpMode
         robot.leftWobbleGoal.setPosition(.5);
         e.reset();
         while(e.seconds()<.5);
-        while(opModeIsActive()&&!lqr.robotInCircle(-51.1,-32,1))
+        while(opModeIsActive()&&!lqr.robotInCircle(-51.1,-32.4,1))
         {
 
-            lqr.runLqrDrive(ontoWobble2,-51.1,-32,0);
+            lqr.runLqrDrive(ontoWobble2,-51.1,-32.4,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
@@ -585,10 +585,22 @@ public class HighGoalAuto extends LinearOpMode
         robot.clawServoLeftOpen();
         e.reset();
         while(e.seconds()<.2);
-        while(opModeIsActive()&&!lqr.robotInCircle(-65,-10,2))
+        while(opModeIsActive()&&!lqr.robotInCircle(Hardware.x,-12,2))
         {
 
-            lqr.runLqrDrive(ontoWobble2,-65,-10,0);
+            lqr.runLqrDrive(ontoWobble2,Hardware.x,-12,0);
+            telemetry.addData("x: ", Hardware.x);
+            telemetry.addData("y: ", Hardware.y);
+            telemetry.addData("theta: ", Hardware.theta);
+            telemetry.update();
+
+
+        }
+
+        while(opModeIsActive()&&!lqr.robotInCircle(-65,-12,2))
+        {
+
+            lqr.runLqrDrive(ontoWobble2,-65,-12,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
