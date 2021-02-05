@@ -90,6 +90,8 @@ public class Teleop extends LinearOpMode
         boolean leftClawOpen = false;
         boolean down2Pressed = false;
         boolean up2Pressed = false;
+        boolean lBumper1Pressed = false;
+        boolean noFire = false;
         double forward=1;
         double angleSpeed=.2;
         double servoPosition =1;
@@ -154,7 +156,7 @@ public class Teleop extends LinearOpMode
 
                     lqr.runLqrDrive(LQR.path, Hardware.x, Hardware.y, thetaGoal);
                     telemetry.addData("goal velocity",autoLaunch[ 1 ] * 10.0267614 * 1.05);
-                    if (robot.flywheelMotorRight.getVelocity() >= autoLaunch[ 1 ] * 10.0267614 * 1.05)
+                    if (robot.flywheelMotorRight.getVelocity() >= autoLaunch[ 1 ] * 10.0267614 * 1.05&&!noFire)
                     {
 
 
@@ -169,6 +171,13 @@ public class Teleop extends LinearOpMode
 
 
                     }
+                }
+                else if(robot.flywheelMotorRight.getVelocity() >= autoLaunch[ 1 ] * 10.0267614 * 1.05)
+                {
+
+                    autoShoot=false;
+                    noFire=false;
+
                 }
                 else
                 {
@@ -310,12 +319,24 @@ public class Teleop extends LinearOpMode
                 autoShoot=!autoShoot;
                 if(!autoShoot)
                     autoShooting=false;
+                noFire=true;
 
             }else if(!gamepad1.x)
             {
                 x1Pressed=false;
             }
+            if(gamepad1.left_bumper&&!lBumper1Pressed)
+            {
+                x1Pressed=true;
+                autoShoot=!autoShoot;
+                if(!autoShoot)
+                    autoShooting=false;
+                noFire=false;
 
+            }else if(!gamepad1.x)
+            {
+                lBumper1Pressed=false;
+            }
             //flip direction of drive when dpad buttons are pressed
             if(gamepad1.dpad_up)
             {
@@ -353,6 +374,13 @@ public class Teleop extends LinearOpMode
             //sets flywheel power to the left trigger
             if(!gamepad2.right_bumper&&!autoShoot)
                 robot.setFlyWheelPower(gamepad2.right_trigger);
+
+            if(gamepad2.dpad_right)
+            {
+
+                robot.flywheelRotateServoLeft.setPosition(.7);
+
+            }
 
             //makes the flywheel rotation servo move with b and x
             if(Math.abs(gamepad2.left_stick_y)>.03)

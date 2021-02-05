@@ -410,7 +410,7 @@ public class Hardware {
     */
     public void leftWobbleGoalUp()
     {
-        leftWobbleGoal.setPosition(0.05);
+        leftWobbleGoal.setPosition(0.25);
     }
 
     /**
@@ -426,7 +426,7 @@ public class Hardware {
      */
     public void leftWobbleGoalDown()
     {
-        leftWobbleGoal.setPosition(.75);
+        leftWobbleGoal.setPosition(.85);
     }
 
     /**
@@ -439,10 +439,10 @@ public class Hardware {
 
 
     //raises left claw
-    public void clawServoLeftClose() {clawServoLeft.setPosition(1);}
+    public void clawServoLeftClose() {clawServoLeft.setPosition(.4);}
 
     //lowers left claw
-    public void clawServoLeftOpen() {clawServoLeft.setPosition(.4);}
+    public void clawServoLeftOpen() {clawServoLeft.setPosition(1);}
 
     //raises right claw
     public void clawServoRightClose() {clawServoRight.setPosition(1);}
