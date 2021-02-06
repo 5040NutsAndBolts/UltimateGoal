@@ -381,6 +381,12 @@ public class Teleop extends LinearOpMode
                 robot.flywheelRotateServoLeft.setPosition(.7);
 
             }
+            if(gamepad2.dpad_left)
+            {
+
+                robot.leftWobbleGoal.setPosition(.5);
+
+            }
 
             //makes the flywheel rotation servo move with b and x
             if(Math.abs(gamepad2.left_stick_y)>.03)

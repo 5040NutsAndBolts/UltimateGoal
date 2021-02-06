@@ -447,7 +447,7 @@ public class HighGoalAuto extends LinearOpMode
         e.reset();
         e.startTime();
         //shoot 3 rings
-        while(e.seconds()<2.1&&opModeIsActive()){robot.setFlyWheelVelocity(2400);}
+        while(e.seconds()<1.7&&opModeIsActive()){robot.setFlyWheelVelocity(2400);}
 
         for(int i = 0; i<4; i++)
         {
@@ -475,7 +475,7 @@ public class HighGoalAuto extends LinearOpMode
         if(auto==4||auto==1)
         {
 
-            while(e.seconds()<1.75)
+            while(e.seconds()<1.3)
             {
 
                 double rotate;
@@ -486,9 +486,9 @@ public class HighGoalAuto extends LinearOpMode
 
                 robot.setIntakePower(1);
                 if(e.seconds()>.7)
-                    robot.drive(-.1,0,rotate);
+                    robot.drive(-.075,0,rotate);
                 else
-                    robot.drive(-.2,.35,0);
+                    robot.drive(-.15,.35,0);
 
             }
 
@@ -547,10 +547,10 @@ public class HighGoalAuto extends LinearOpMode
 
         }
         robot.hardBrakeMotors();
-        while(opModeIsActive()&&!lqr.robotInCircle(-21.3,-33.2,.8))
+        while(opModeIsActive()&&!lqr.robotInCircle(-21.3,-33.6,.8))
         {
 
-            lqr.runLqrDrive(ontoWobble2,-21.3,-33.2,0);
+            lqr.runLqrDrive(ontoWobble2,-21.3,-33.6,0);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
