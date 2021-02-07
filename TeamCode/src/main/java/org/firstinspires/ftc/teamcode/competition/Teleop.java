@@ -104,7 +104,10 @@ public class Teleop extends LinearOpMode
 
 
 
-        robot.resetOdometry(Hardware.x,Hardware.y-15,0);
+        if(Hardware.fromAuto)
+            robot.resetOdometry(Hardware.x-9,Hardware.y-15,0);
+        else
+            robot.resetOdometry(Hardware.x,Hardware.y,0);
         while(opModeIsActive())
         {
 
@@ -378,7 +381,7 @@ public class Teleop extends LinearOpMode
             if(gamepad2.dpad_right)
             {
 
-                robot.flywheelRotateServoLeft.setPosition(.7);
+                servoPosition=.695;
 
             }
             if(gamepad2.dpad_left)

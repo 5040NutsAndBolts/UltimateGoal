@@ -54,6 +54,8 @@ public class Hardware {
 
     }
 
+    public static boolean fromAuto=false;
+
     //Positions of the odometry wheels
     public ThreeTrackingWheelLocalizer odom = new ThreeTrackingWheelLocalizer(
             new ArrayList<>(Arrays.asList(
@@ -259,17 +261,17 @@ public class Hardware {
 
         if(deltaLeftDist>0&&deltaRightDist<0)
         {
-            deltaRightDist *= 0.840336134*1.02*1.054;
-            deltaLeftDist*=1.02*1.054;
+            deltaRightDist *= 0.840336134*1.02*1.07;
+            deltaLeftDist*=1.015*1.07;
         }
         else if(deltaRightDist<0)
-            deltaRightDist*=1.02;
+            deltaRightDist*=1.05;
         if(deltaRightDist>0&&deltaLeftDist<0)
         {
             deltaLeftDist *= 0.970760234;
         }
         else if(deltaLeftDist<0)
-            deltaLeftDist*=1.025;
+            deltaLeftDist*=1.05;
 
         leftOdomTraveled += deltaLeftDist;
         rightOdomTraveled += deltaRightDist;
