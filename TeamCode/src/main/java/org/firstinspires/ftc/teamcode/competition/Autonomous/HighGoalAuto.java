@@ -308,7 +308,7 @@ public class HighGoalAuto extends LinearOpMode
 
         if(auto==0)
         {
-            wobbleX=-71.5;
+            wobbleX=-74.5;
             wobbleY=3.25;
             wobbleRadius=1.2;
 
@@ -316,7 +316,7 @@ public class HighGoalAuto extends LinearOpMode
         }else if(auto==4)
         {
 
-            wobbleX=-121;
+            wobbleX=-119;
             wobbleY=6;
             wobbleRadius=2.5;
 
@@ -324,8 +324,8 @@ public class HighGoalAuto extends LinearOpMode
         else
         {
 
-            wobbleX=-110;
-            wobbleY=-17;
+            wobbleX=-104;
+            wobbleY=-16;
             wobbleRadius=1.2;
 
 
@@ -426,25 +426,46 @@ public class HighGoalAuto extends LinearOpMode
             telemetry.update();
 
         }
+        e.reset();
         //drive to point to shoot into the high goal
-        while(opModeIsActive()&&!lqr.robotInCircle(-59,-3,3.5))
+        if(auto==1)
         {
 
-            robot.setFlyWheelVelocity(2400);
-            lqr.runLqrDrive(beforeShoot,-59,-3,0);
-            robot.flywheelRotateServoLeft.setPosition(.345);
-            telemetry.addData("x: ", Hardware.x);
-            telemetry.addData("y: ", Hardware.y);
-            telemetry.addData("theta: ", Hardware.theta);
-            telemetry.update();
+            while(opModeIsActive()&&!lqr.robotInCircle(-59,-5,3.5))
+            {
+
+                robot.setFlyWheelVelocity(2400);
+                lqr.runLqrDrive(beforeShoot,-59,-5,0);
+                robot.flywheelRotateServoLeft.setPosition(.34);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+            }
 
         }
-        while(opModeIsActive()&&!lqr.robotInCircle(-59,-4,1.2)||!HelperMethods.nearAngle(Hardware.theta,0,.025))
+        else
+        {
+            while(opModeIsActive()&&!lqr.robotInCircle(-59,-3,3.5))
+            {
+
+                robot.setFlyWheelVelocity(2400);
+                lqr.runLqrDrive(beforeShoot,-59,-3,0);
+                robot.flywheelRotateServoLeft.setPosition(.34);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+            }
+        }
+        while(opModeIsActive()&&e.seconds()<5&&!lqr.robotInCircle(-59,-4,1.2)||!HelperMethods.nearAngle(Hardware.theta,0,.025))
         {
 
             robot.setFlyWheelVelocity(2400);
             lqr.runLqrDrive(shoot,-59,-4,0);
-            robot.flywheelRotateServoLeft.setPosition(.345);
+            robot.flywheelRotateServoLeft.setPosition(.34);
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
@@ -468,7 +489,7 @@ public class HighGoalAuto extends LinearOpMode
             while(e.seconds()<.5&&opModeIsActive())
             {
                 robot.setFlyWheelVelocity(2400);
-                robot.flywheelRotateServoLeft.setPosition(.345);
+                robot.flywheelRotateServoLeft.setPosition(.344);
                 telemetry.addData("vel",robot.flywheelMotorLeft.getVelocity());
                 telemetry.addData("x: ", Hardware.x);
                 telemetry.addData("y: ", Hardware.y);
@@ -533,53 +554,149 @@ public class HighGoalAuto extends LinearOpMode
                     }
 
                 }
-        //Move towards wobble of the x
-        while(opModeIsActive()&&!lqr.robotInCircle(-25,-40,.45))
+        if(auto==4)
         {
+            //Move towards wobble of the x
+            while (opModeIsActive() && !lqr.robotInCircle(-24.5, -40, .45))
+            {
 
-            lqr.runLqrDrive(path,-25,-40,0);
-            telemetry.addData("x: ", Hardware.x);
-            telemetry.addData("y: ", Hardware.y);
-            telemetry.addData("theta: ", Hardware.theta);
-            telemetry.update();
+                lqr.runLqrDrive(path, -24.5, -40, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
 
 
+            }
+
+            robot.hardBrakeMotors();
+            e.reset();
+            while (e.seconds() < .2) ;
+            //Strafe to approach wobble
+            while (opModeIsActive() && !lqr.robotInCircle(-24.5, -35.5, 1))
+            {
+
+                lqr.runLqrDrive(ontoWobble2, -24.5, -35.5, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+
+            }
+            robot.hardBrakeMotors();
+            //move to point and grab second wobble
+            e.reset();
+            lqr.setPowerMultiply(.3);
+            while (opModeIsActive() && robot.wobbleSensor.red() < 150 && e.seconds() < 1.6)
+            {
+
+                lqr.runLqrDrive(ontoWobble2, -24.5, -27, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+            }
         }
-
-        robot.hardBrakeMotors();
-        e.reset();
-        while(e.seconds()<.2);
-        //Strafe to approach wobble
-        while(opModeIsActive()&&!lqr.robotInCircle(-25,-34.5,1))
+        else if(auto==1)
         {
+            //Move towards wobble of the x
+            while (opModeIsActive() && !lqr.robotInCircle(-23.75, -40, .45))
+            {
 
-            lqr.runLqrDrive(ontoWobble2,-25,-34.5,0);
-            telemetry.addData("x: ", Hardware.x);
-            telemetry.addData("y: ", Hardware.y);
-            telemetry.addData("theta: ", Hardware.theta);
-            telemetry.update();
+                lqr.runLqrDrive(path, -23.75, -40, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
 
 
+            }
+
+            robot.hardBrakeMotors();
+            e.reset();
+            while (e.seconds() < .2) ;
+            //Strafe to approach wobble
+            while (opModeIsActive() && !lqr.robotInCircle(-23.75, -34.75, 1))
+            {
+
+                lqr.runLqrDrive(ontoWobble2, -23.75, -34.75, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+
+            }
+            robot.hardBrakeMotors();
+            //move to point and grab second wobble
+            e.reset();
+            lqr.setPowerMultiply(.3);
+            while (opModeIsActive() && robot.wobbleSensor.red() < 150 && e.seconds() < 1.6)
+            {
+
+                lqr.runLqrDrive(ontoWobble2, -23.75, -27, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+            }
         }
-        robot.hardBrakeMotors();
-        //move to point and grab second wobble
-        while(opModeIsActive()&&!lqr.robotInCircle(-25.3,-33.4,1))
+        else
         {
+            //Move towards wobble of the x
+            while (opModeIsActive() && !lqr.robotInCircle(-23.75, -40, .45))
+            {
 
-            lqr.runLqrDrive(ontoWobble2,-25.3,-33.4,0);
-            telemetry.addData("x: ", Hardware.x);
-            telemetry.addData("y: ", Hardware.y);
-            telemetry.addData("theta: ", Hardware.theta);
-            telemetry.update();
+                lqr.runLqrDrive(path, -23.75, -40, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
 
+
+            }
+
+            robot.hardBrakeMotors();
+            e.reset();
+            while (e.seconds() < .2) ;
+            //Strafe to approach wobble
+            while (opModeIsActive() && !lqr.robotInCircle(-23.75, -34.75, 1))
+            {
+
+                lqr.runLqrDrive(ontoWobble2, -23.75, -34.75, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+
+            }
+            robot.hardBrakeMotors();
+            //move to point and grab second wobble
+            e.reset();
+            lqr.setPowerMultiply(.3);
+            while (opModeIsActive() && robot.wobbleSensor.red() < 150 && e.seconds() < 1.6)
+            {
+
+                lqr.runLqrDrive(ontoWobble2, -23.75, -27, 0);
+                telemetry.addData("x: ", Hardware.x);
+                telemetry.addData("y: ", Hardware.y);
+                telemetry.addData("theta: ", Hardware.theta);
+                telemetry.update();
+
+            }
         }
+        lqr.setPowerMultiply(1);
         robot.hardBrakeMotors();
         e.reset();
         while(e.seconds()<.1);
         robot.clawServoLeftClose();
 
         e.reset();
-        while(e.seconds()<2);
+        while(e.seconds()<1.5);
         robot.leftWobbleGoal.setPosition(.5);
         e.reset();
         while(e.seconds()<.1);
@@ -629,10 +746,10 @@ public class HighGoalAuto extends LinearOpMode
         else if(auto==1)
         {
 
-            while(opModeIsActive()&&!lqr.robotInCircle(-97,-20,2))
+            while(opModeIsActive()&&!lqr.robotInCircle(-97,-17,2))
             {
 
-                lqr.runLqrDrive(ontoWobble2,-97,-20,0);
+                lqr.runLqrDrive(ontoWobble2,-97,-17,0);
                 telemetry.addData("x: ", Hardware.x);
                 telemetry.addData("y: ", Hardware.y);
                 telemetry.addData("theta: ", Hardware.theta);
@@ -694,24 +811,24 @@ public class HighGoalAuto extends LinearOpMode
         if(auto==1||auto==4)
         {
 
-            while(opModeIsActive()&&!lqr.robotInCircle(-59,-5,3.5))
+            while(opModeIsActive()&&!lqr.robotInCircle(-59.5,-5,3.5))
             {
 
                 robot.setFlyWheelVelocity(2400);
-                lqr.runLqrDrive(beforeShoot,-59,-5,0);
-                robot.flywheelRotateServoLeft.setPosition(.345);
+                lqr.runLqrDrive(beforeShoot,-59.5,-5,0);
+                robot.flywheelRotateServoLeft.setPosition(.343);
                 telemetry.addData("x: ", Hardware.x);
                 telemetry.addData("y: ", Hardware.y);
                 telemetry.addData("theta: ", Hardware.theta);
                 telemetry.update();
 
             }
-            while(opModeIsActive()&&!lqr.robotInCircle(-59,-5,1.2)||!HelperMethods.nearAngle(Hardware.theta,0,.025))
+            while(opModeIsActive()&&!lqr.robotInCircle(-59.5,-5,1.2)||!HelperMethods.nearAngle(Hardware.theta,0,.025))
             {
 
                 robot.setFlyWheelVelocity(2400);
-                lqr.runLqrDrive(shoot,-59,-5,0);
-                robot.flywheelRotateServoLeft.setPosition(.345);
+                lqr.runLqrDrive(shoot,-59.5,-5,0);
+                robot.flywheelRotateServoLeft.setPosition(.34);
                 telemetry.addData("x: ", Hardware.x);
                 telemetry.addData("y: ", Hardware.y);
                 telemetry.addData("theta: ", Hardware.theta);
@@ -735,7 +852,7 @@ public class HighGoalAuto extends LinearOpMode
                 while(e.seconds()<.05&&opModeIsActive())
                 {
                     robot.setFlyWheelVelocity(2400);
-                    robot.flywheelRotateServoLeft.setPosition(.345);
+                    robot.flywheelRotateServoLeft.setPosition(.34);
                     telemetry.addData("vel",robot.flywheelMotorLeft.getVelocity());
                     telemetry.addData("x: ", Hardware.x);
                     telemetry.addData("y: ", Hardware.y);

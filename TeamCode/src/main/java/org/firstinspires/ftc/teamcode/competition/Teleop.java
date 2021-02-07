@@ -93,7 +93,7 @@ public class Teleop extends LinearOpMode
         boolean lBumper1Pressed = false;
         boolean noFire = false;
         double forward=1;
-        double angleSpeed=.2;
+        double angleSpeed=.45;
         double servoPosition =1;
         double savedPosition = .405;
 
@@ -212,6 +212,10 @@ public class Teleop extends LinearOpMode
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
+            telemetry.addData("alpha", robot.wobbleSensor.alpha());
+            telemetry.addData("red",robot.wobbleSensor.red());
+            telemetry.addData("blue",robot.wobbleSensor.blue());
+            telemetry.addData("argb",robot.wobbleSensor.argb());
             telemetry.addData("Auto Aim",autoAim);
             telemetry.addData("Slow Drive",slowDrive);
             telemetry.addData("angle speed",angleSpeed);
@@ -265,6 +269,18 @@ public class Teleop extends LinearOpMode
             {
 
                 down2Pressed=false;
+
+            }
+            if(gamepad2.x&&gamepad2.dpad_down)
+            {
+
+                leftClawOpen=true;
+
+            }
+            else if(robot.wobbleSensor.red()>150)
+            {
+
+                leftClawOpen=false;
 
             }
 
@@ -448,31 +464,6 @@ public class Teleop extends LinearOpMode
 
             }
 
-            if(gamepad2.dpad_up&&!upPressed)
-            {
-                if(angleSpeed<1)
-                    angleSpeed+=.1;
-                upPressed=true;
-            }
-            if(!gamepad2.dpad_up)
-            {
-
-                upPressed=false;
-
-            }
-
-            if(gamepad2.dpad_down&&!downPressed)
-            {
-                if(angleSpeed>.11)
-                    angleSpeed-=.1;
-                downPressed=true;
-            }
-            if(!gamepad2.dpad_down)
-            {
-
-                downPressed=false;
-
-            }
 
         }
 

@@ -28,10 +28,7 @@ import java.util.Scanner;
 public class LQR extends Application
 {
 
-    //GyroSensor gyro;
-    BNO055IMU imu;
-    ColorSensor colorSensor;
-    Servo backServo;
+
     double mass = 100;
     double momentOfInertia = 1250;
     double radius = 5;
@@ -41,6 +38,8 @@ public class LQR extends Application
     double lastTime = 0;
     double lastX = 0;
     double lastY = 0;
+
+    double powerMultiply = 1;
 
     public static double[][][] path;
 
@@ -64,6 +63,13 @@ public class LQR extends Application
     {
 
         return Math.pow(y-Hardware.y,2)+Math.pow(x-Hardware.x,2)<Math.pow(r,2);
+
+    }
+
+    public void setPowerMultiply(double power)
+    {
+
+        powerMultiply=power;
 
     }
 
@@ -117,10 +123,10 @@ public class LQR extends Application
             scale = Math.max(Math.max(Math.abs(d[0]), Math.abs(d[1])), Math.max(Math.abs(d[2]), Math.abs(d[3])));
 
         //run the motors
-        robot.leftFront.setPower(d[0]/scale);
-        robot.rightFront.setPower(d[1]/scale);
-        robot.leftRear.setPower(d[2]/scale);
-        robot.rightRear.setPower(d[3]/scale);
+        robot.leftFront.setPower(d[0]/scale*powerMultiply);
+        robot.rightFront.setPower(d[1]/scale*powerMultiply);
+        robot.leftRear.setPower(d[2]/scale*powerMultiply);
+        robot.rightRear.setPower(d[3]/scale*powerMultiply);
 
     }
 

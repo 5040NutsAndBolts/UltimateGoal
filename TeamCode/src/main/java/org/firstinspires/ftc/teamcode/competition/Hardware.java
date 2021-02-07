@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -132,7 +133,7 @@ public class Hardware {
     //Fly wheels
     public DcMotorEx flywheelMotorLeft;
     public DcMotorEx flywheelMotorRight;
-    DigitalChannelImpl digitalChannel;
+
 
     //Servo to move rind from magazine into flywheels
     public Servo flicker;
@@ -145,6 +146,8 @@ public class Hardware {
 
     // Real world distance traveled by the wheels
     public double leftOdomTraveled, rightOdomTraveled, centerOdomTraveled;
+
+    public ColorSensor wobbleSensor;
 
     //Webcam
     public WebcamName webcam;
@@ -211,7 +214,7 @@ public class Hardware {
 
         //flywheel rotating
         flywheelRotateServoLeft = hwMap.servo.get("flywheelRotateServoLeft");
-        flywheelRotateServoLeft.setPosition(.9);
+
 
         //claw servos
         clawServoLeft = hwMap.servo.get("clawServoLeft");
@@ -221,6 +224,8 @@ public class Hardware {
 
         //Webcam
         webcam = hwMap.get(WebcamName .class, "Webcam 1");
+
+        wobbleSensor = hwMap.get(ColorSensor.class,"wobbleSensor");
 
         //tensorflow object detection
         tfodMonitorViewId = hwMap.appContext.getResources().getIdentifier(
@@ -235,6 +240,7 @@ public class Hardware {
     {
 
         flicker.setPosition(1);
+        flywheelRotateServoLeft.setPosition(.7);
 
     }
 
