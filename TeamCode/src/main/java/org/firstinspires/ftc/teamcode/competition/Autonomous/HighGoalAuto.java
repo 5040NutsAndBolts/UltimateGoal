@@ -210,24 +210,25 @@ public class HighGoalAuto extends LinearOpMode
             String content = new Scanner(new File(Environment.getExternalStorageDirectory() + "/lqrTestData.txt")).useDelimiter("\\Z").next();
 
             //split the file into individual matrices
+            //▰▰▰▰▱▱▱ Loading bar scheme
             String[] data = content.split("\r\n\r\n");
             path = lqr.loadPath("/lqrTestData.txt");
-            telemetry.addData("data","|------");
+            telemetry.addData("data","▰▱▱▱▱▱▱");
             telemetry.update();
             wobble = lqr.loadPath("/wobble.txt");
-            telemetry.addData("data","||-----");
+            telemetry.addData("data","▰▰▱▱▱▱▱");
             telemetry.update();
             wobble4 = lqr.loadPath("/wobble4.txt");
-            telemetry.addData("data","|||----");
+            telemetry.addData("data","▰▰▰▱▱▱▱");
             telemetry.update();
             grabWobble2=lqr.loadPath("/wobbleGrab2.txt");
-            telemetry.addData("data","||||---");
+            telemetry.addData("data","▰▰▰▰▱▱▱");
             telemetry.update();
             ontoWobble2=lqr.loadPath("/ontoWobble2.txt");
-            telemetry.addData("data","|||||--");
+            telemetry.addData("data","▰▰▰▰▰▱▱");
             telemetry.update();
             shoot=lqr.loadPath("/shoot.txt");
-            telemetry.addData("data","|||||||-");
+            telemetry.addData("data","▰▰▰▰▰▰▱");
             telemetry.update();
             beforeShoot=lqr.loadPath("/beforeShoot.txt");
 

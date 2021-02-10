@@ -212,20 +212,15 @@ public class Teleop extends LinearOpMode
             telemetry.addData("x: ", Hardware.x);
             telemetry.addData("y: ", Hardware.y);
             telemetry.addData("theta: ", Hardware.theta);
-            telemetry.addData("alpha", robot.wobbleSensor.alpha());
-            telemetry.addData("red",robot.wobbleSensor.red());
-            telemetry.addData("blue",robot.wobbleSensor.blue());
-            telemetry.addData("argb",robot.wobbleSensor.argb());
             telemetry.addData("Auto Aim",autoAim);
             telemetry.addData("Slow Drive",slowDrive);
-            telemetry.addData("angle speed",angleSpeed);
-            telemetry.addData("odom left",(robot.odom.getWheelPositions().get(1)-leftSub)*2048*4/0.688975/Math.PI/2);
-            telemetry.addData("odom right",(robot.odom.getWheelPositions().get(2)-rightSub)*2048*4/0.688975/Math.PI/2);
-            telemetry.addData("odom center",(robot.odom.getWheelPositions().get(0)-centerSub)*2048*4/0.688975/Math.PI/2);
             telemetry.addData("Left Speed", robot.flywheelMotorLeft.getVelocity());
             telemetry.addData("Right Speed", robot.flywheelMotorRight.getVelocity());
             telemetry.addData("Angle Servo",servoPosition);
             telemetry.addData("Auto Angle",autoLaunch[0]*180/Math.PI);
+            telemetry.addData("odom left",(robot.odom.getWheelPositions().get(1)-leftSub)*2048*4/0.688975/Math.PI/2);
+            telemetry.addData("odom right",(robot.odom.getWheelPositions().get(2)-rightSub)*2048*4/0.688975/Math.PI/2);
+            telemetry.addData("odom center",(robot.odom.getWheelPositions().get(0)-centerSub)*2048*4/0.688975/Math.PI/2);
             telemetry.update();
 
             if(gamepad1.left_bumper)
