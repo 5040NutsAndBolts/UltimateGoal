@@ -244,9 +244,9 @@ public class Teleop extends LinearOpMode
 
             }
 
-            if (leftWobbleDown)
+            if (leftWobbleDown&&!midLock)
                 robot.leftWobbleGoalDown();
-            else
+            else if(!midLock)
             {
                 robot.leftWobbleGoalUp();
                 leftClawOpen = false;
