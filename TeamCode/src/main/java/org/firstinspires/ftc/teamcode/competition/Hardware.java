@@ -418,7 +418,7 @@ public class Hardware {
     */
     public void leftWobbleGoalUp()
     {
-        leftWobbleGoal.setPosition(0.25);
+        leftWobbleGoal.setPosition(0.35);
     }
 
     /**
@@ -434,7 +434,7 @@ public class Hardware {
      */
     public void leftWobbleGoalDown()
     {
-        leftWobbleGoal.setPosition(.85);
+        leftWobbleGoal.setPosition(.94);
     }
 
     /**
