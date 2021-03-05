@@ -340,7 +340,7 @@ public class HighGoalAuto extends LinearOpMode
 
         if(auto==1)
         {
-//changed from this point forward
+//changed from this point forward (have one or two spots where i left a comment on didn't know how much you wanted changed)
             while(opModeIsActive()&&!lqr.robotInCircle(56,-5,-2.5))
             {
 
