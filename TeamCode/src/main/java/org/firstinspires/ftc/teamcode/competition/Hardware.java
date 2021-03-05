@@ -115,6 +115,9 @@ public class Hardware {
     //Intake
     DcMotor intakeMotor;
 
+    //Intake servo
+    public CRServo intakeServo;
+
     //flywheelRotateServo
     public Servo flywheelRotateServoLeft;
 
@@ -211,6 +214,9 @@ public class Hardware {
         //Intake
         intakeMotor = hwMap.dcMotor.get("intake");
         intakeMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        //Intake Servo
+        intakeServo = hwMap.crservo.get("intake");
 
         //flywheel rotating
         flywheelRotateServoLeft = hwMap.servo.get("flywheelRotateServoLeft");
@@ -384,6 +390,7 @@ public class Hardware {
     {
 
         intakeMotor.setPower(power);
+        intakeServo.setPower(power);
 
     }
 
