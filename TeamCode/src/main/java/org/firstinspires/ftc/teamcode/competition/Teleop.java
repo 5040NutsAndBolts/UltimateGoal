@@ -178,7 +178,6 @@ public class Teleop extends LinearOpMode
                 } else if (robot.flywheelMotorRight.getVelocity() >= autoLaunch[ 1 ] * 10.0267614 * 1.05)
                 {
 
-                    autoShoot = false;
                     noFire = false;
 
                 } else
@@ -410,7 +409,7 @@ public class Teleop extends LinearOpMode
             if (midLock)
             {
 
-                robot.leftWobbleGoal.setPosition(.5);
+                robot.leftWobbleGoal.setPosition(.6);
 
             }
 
