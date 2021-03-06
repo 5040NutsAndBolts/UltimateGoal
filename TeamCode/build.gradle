@@ -13,15 +13,14 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
-apply from: '../build.dependencies.gradle'
+
+repositories {
+    maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
+}
 
 dependencies {
-    implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 
     implementation 'org.openftc:rev-extensions-2:1.2'
 
 }
-
-}
-
