@@ -216,7 +216,7 @@ public class Hardware {
         intakeMotor.setDirection(DcMotor.Direction.REVERSE);
 
         //Intake Servo
-        intakeServo = hwMap.crservo.get("intake");
+        intakeServo = hwMap.crservo.get("counterRoller");
 
         //flywheel rotating
         flywheelRotateServoLeft = hwMap.servo.get("flywheelRotateServoLeft");
@@ -441,7 +441,12 @@ public class Hardware {
      */
     public void leftWobbleGoalDown()
     {
-        leftWobbleGoal.setPosition(.94);
+        leftWobbleGoal.setPosition(1);
+    }
+
+    public void leftWobbleGoalMid()
+    {
+        leftWobbleGoal.setPosition(.7);
     }
 
     /**
@@ -457,7 +462,7 @@ public class Hardware {
     public void clawServoLeftClose() {clawServoLeft.setPosition(.39);}
 
     //lowers left claw
-    public void clawServoLeftOpen() {clawServoLeft.setPosition(1);}
+    public void clawServoLeftOpen() {clawServoLeft.setPosition(.7);}
 
     //raises right claw
     public void clawServoRightClose() {clawServoRight.setPosition(1);}
