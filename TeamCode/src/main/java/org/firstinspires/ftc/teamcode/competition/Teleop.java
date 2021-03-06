@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+
 import org.firstinspires.ftc.teamcode.helperclasses.HelperMethods;
 import org.firstinspires.ftc.teamcode.helperclasses.LQR;
 import org.firstinspires.ftc.teamcode.helperclasses.ThreadPool;
@@ -16,12 +18,17 @@ import java.io.IOException;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+import java.util.List;
+import java.util.ArrayList;
 
 @TeleOp(name = "Teleop", group = "DemoBot")
 public class Teleop extends LinearOpMode
 {
-
-
+    private final double robotWidth = 15.375; //Width of actual robot
+    private final double robotLength = 17.25; //Look above if you can't figure this out
+    double OdomResetX;
+    double OdomResetY;
+    double OdomResetTheta;
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -29,6 +36,10 @@ public class Teleop extends LinearOpMode
         Hardware robot = new Hardware();
         robot.init(hardwareMap);
         final LQR lqr = new LQR(robot);
+        VuforiaWebcamCameraResetOdometry vuWebcamReset = new VuforiaWebcamCameraResetOdometry();
+        List<VuforiaTrackable> trythistho = new ArrayList<VuforiaTrackable>();
+        trythistho = vuWebcamReset.initVuReset();
+
         /*
 0 0 0 1 0 0
 0 0 0 0 1 0
@@ -106,9 +117,8 @@ public class Teleop extends LinearOpMode
         boolean wobbleLock = false;
         boolean midLock = false;
 
-
         if (Hardware.fromAuto)
-            robot.resetOdometry(Hardware.x - 9, Hardware.y - 15, 0);
+            robot.resetOdometry(Hardware.x + robotWidth/2, Hardware.y + robotLength/2, 0);
         else
             robot.resetOdometry(Hardware.x, Hardware.y, 0);
         while (opModeIsActive())
@@ -283,21 +293,13 @@ public class Teleop extends LinearOpMode
             else
                 robot.leftWobbleGoalUp();
 
-            if (gamepad1.right_bumper && !rBumper1Pressed)
+            if (gamepad1.right_bumper)
             {
-
-                if (gamepad2.dpad_down)
-                {
-
-                    rBumper1Pressed = true;
-                    leftClawOpen = !leftClawOpen;
-
-                }
-            } else if (!gamepad1.right_bumper)
-            {
-
-                rBumper1Pressed = false;
-
+                vuWebcamReset.findTargetsVuReset(trythistho);
+                OdomResetX = -1*(72 + VuforiaWebcamCameraResetOdometry.VuOdomResetX);
+                OdomResetY = -1*(72 + VuforiaWebcamCameraResetOdometry.VuOdomResetY);
+                OdomResetTheta = VuforiaWebcamCameraResetOdometry.VuOdomResetTheta;
+                robot.resetOdometry(OdomResetX, OdomResetY, OdomResetTheta);
             }
 
             if (leftClawOpen)

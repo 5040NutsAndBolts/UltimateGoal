@@ -229,7 +229,7 @@ public class Hardware {
         flicker = hwMap.servo.get("flicker");
 
         //Webcam
-        webcam = hwMap.get(WebcamName .class, "Webcam 1");
+        webcam = hwMap.get(WebcamName.class, "Webcam 1");
 
         wobbleSensor = hwMap.get(ColorSensor.class,"wobbleSensor");
 
