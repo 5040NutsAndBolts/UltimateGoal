@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.competition;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -41,8 +42,10 @@ import static java.lang.Math.abs;
  * <p>
  * Note: 0, 0, 0 on the field is the robot in the blue depot with the intake facing the red depot
  */
+@Config
 public class Hardware {
 
+    public static double trackwidth = 13.15*1.018531616918942;
     public enum SelectedGoal
     {
 
@@ -60,9 +63,9 @@ public class Hardware {
     //Positions of the odometry wheels
     public ThreeTrackingWheelLocalizer odom = new ThreeTrackingWheelLocalizer(
             new ArrayList<>(Arrays.asList(
-                    new Pose2d(-4.58, 0, -Math.PI / 2),
-                    new Pose2d(0, 6.485, 0),
-                    new Pose2d(0, -6.485, 0)))) {
+                    new Pose2d(-4.58, 0, Math.PI / 2),
+                    new Pose2d(0, trackwidth/2, 0),
+                    new Pose2d(0, -trackwidth/2, 0)))) {
         @Override
         public List<Double> getWheelPositions() {
             ArrayList<Double> wheelPositions = new ArrayList<>(3);
@@ -77,7 +80,7 @@ public class Hardware {
     // Ticks Per Rotation of an odometry wheel
     private static final double ODOM_TICKS_PER_ROTATION = 2048*4;
     // Radius of an odometry wheel in cm
-    private static final double ODOM_WHEEL_RADIUS = 0.688975;
+    private static final double ODOM_WHEEL_RADIUS = 0.7017428;
     // Circumference of an odometry wheel in cm
     private static final double WHEEL_CIRCUM = 2.0 * Math.PI * ODOM_WHEEL_RADIUS;
     // Number of ticks in a centimeter using dimensional analysis
@@ -271,19 +274,26 @@ public class Hardware {
 
         // Update real world distance traveled by the odometry wheels, regardless of orientation
 
-        if(deltaLeftDist>0&&deltaRightDist<0)
+        if(deltaLeftDist<0&&deltaRightDist>0)
         {
-            deltaRightDist *= 0.840336134*1.02*1.07;
-            deltaLeftDist*=1.015*1.07;
-        }
-        else if(deltaRightDist<0)
-            deltaRightDist*=1.05;
-        if(deltaRightDist>0&&deltaLeftDist<0)
-        {
-            deltaLeftDist *= 0.970760234;
+
+            deltaLeftDist/=1.002;
+            deltaRightDist/=1.002;
         }
         else if(deltaLeftDist<0)
-            deltaLeftDist*=1.05;
+        {
+
+            deltaLeftDist*=1.004;
+
+        }
+        else if(deltaRightDist>0)
+        {
+
+            deltaRightDist/=1.001;
+            deltaLeftDist*=1.0015;
+
+        }
+
 
         leftOdomTraveled += deltaLeftDist;
         rightOdomTraveled += deltaRightDist;
@@ -294,8 +304,8 @@ public class Hardware {
         double thisTime = e.seconds();
         odom.update();
         theta = odom.getPoseEstimate().component3();
-        x = odom.getPoseEstimate().component1();
-        y = odom.getPoseEstimate().component2();
+        x = -odom.getPoseEstimate().component1();
+        y = -odom.getPoseEstimate().component2();
         if(thisTime-lastTime>.15)
         {
 
@@ -320,15 +330,39 @@ public class Hardware {
     }
 
     private int getDeltaLeftTicks() {
-        return leftEncoderPos - bulkData.getMotorCurrentPosition(leftOdom);
+        try
+        {
+            return leftEncoderPos - bulkData.getMotorCurrentPosition(leftOdom);
+        }catch(Exception e)
+        {
+
+            return 0;
+
+        }
     }
 
     private int getDeltaRightTicks() {
-        return rightEncoderPos - bulkData.getMotorCurrentPosition(rightOdom);
+        try
+        {
+            return rightEncoderPos - bulkData.getMotorCurrentPosition(rightOdom);
+        }catch(Exception e)
+        {
+
+            return 0;
+
+        }
     }
 
     private int getDeltaCenterTicks() {
-        return centerEncoderPos - bulkData.getMotorCurrentPosition(centerOdom);
+        try
+        {
+            return centerEncoderPos - bulkData.getMotorCurrentPosition(centerOdom);
+        }catch(Exception e)
+        {
+
+            return 0;
+
+        }
     }
 
     /**
@@ -459,10 +493,10 @@ public class Hardware {
 
 
     //raises left claw
-    public void clawServoLeftClose() {clawServoLeft.setPosition(.39);}
+    public void clawServoLeftClose() {clawServoLeft.setPosition(1);}
 
     //lowers left claw
-    public void clawServoLeftOpen() {clawServoLeft.setPosition(.7);}
+    public void clawServoLeftOpen() {clawServoLeft.setPosition(.5);}
 
     //raises right claw
     public void clawServoRightClose() {clawServoRight.setPosition(1);}

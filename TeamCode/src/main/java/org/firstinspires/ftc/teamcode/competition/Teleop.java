@@ -114,6 +114,8 @@ public class Teleop extends LinearOpMode
         while (opModeIsActive())
         {
 
+            if(gamepad1.right_bumper)
+                robot.resetOdometry(0,0,0);
             robot.updatePositionRoadRunner();
             double[] autoLaunch = robot.getFlyWheelAngle(Hardware.SelectedGoal.HIGHGOAL);
             //set drive speed
@@ -211,6 +213,7 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Red: ", robot.wobbleSensor.red());
             telemetry.addData("Auto Aim", autoAim);
             telemetry.addData("Slow Drive", slowDrive);
+            telemetry.addData("Trackwidth", Hardware.trackwidth);
             telemetry.addData("Left Speed", robot.flywheelMotorLeft.getVelocity());
             telemetry.addData("Right Speed", robot.flywheelMotorRight.getVelocity());
             telemetry.addData("Angle Servo", servoPosition);
