@@ -156,6 +156,9 @@ public class Hardware {
 
     public ColorSensor wobbleSensor;
 
+    public DigitalChannel redLED;
+    public DigitalChannel greenLED;
+
     //Webcam
     public WebcamName webcam;
     //Tensorflow
@@ -236,6 +239,10 @@ public class Hardware {
         webcam = hwMap.get(WebcamName .class, "Webcam 1");
 
         wobbleSensor = hwMap.get(ColorSensor.class,"wobbleSensor");
+
+        redLED = hwMap.get(DigitalChannel.class, "red");
+        greenLED = hwMap.get(DigitalChannel.class, "green");
+
 
         //tensorflow object detection
         tfodMonitorViewId = hwMap.appContext.getResources().getIdentifier(

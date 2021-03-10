@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 import org.firstinspires.ftc.teamcode.helperclasses.HelperMethods;
 import org.firstinspires.ftc.teamcode.helperclasses.LQR;
 import org.firstinspires.ftc.teamcode.helperclasses.ThreadPool;
@@ -225,6 +226,17 @@ public class Teleop extends LinearOpMode
             telemetry.addData("odom right", (robot.odom.getWheelPositions().get(2) - rightSub) * 2048 * 4 / 0.688975 / Math.PI / 2);
             telemetry.addData("odom center", (robot.odom.getWheelPositions().get(0) - centerSub) * 2048 * 4 / 0.688975 / Math.PI / 2);
             telemetry.update();
+
+
+            if (servoPosition<.43&&servoPosition>.45)
+            {
+                robot.greenLED.setState(true);
+
+            }else
+            {
+                robot.greenLED.setState(false);
+
+            }
 
             if (gamepad1.left_bumper)
             {
