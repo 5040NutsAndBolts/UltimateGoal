@@ -101,7 +101,7 @@ public class LQR extends Application
             diff=Math.PI*2-diff;
 
         //define state matrix
-        x = new double[]{-xGoal + Hardware.x,  yGoal-Hardware.y, -sign*(diff), -robot.xVelocity/8,  -robot.yVelocity/8, -robot.thetaVelocity/8};
+        x = new double[]{xGoal - Hardware.x,  -yGoal+Hardware.y, -sign*(diff), 0,  0, 0};
 
         //multiply x by the gain matrix k
         double[] d = new double[k.length];

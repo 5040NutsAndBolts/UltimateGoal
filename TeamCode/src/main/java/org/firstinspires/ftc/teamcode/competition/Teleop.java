@@ -108,7 +108,7 @@ public class Teleop extends LinearOpMode
         double forward = 1;
         double angleSpeed = .45;
         double servoPosition = 1;
-        double savedPosition = .405;
+        double savedPosition = .42;
 
         double leftSub = 0;
         double rightSub = 0;
@@ -116,6 +116,7 @@ public class Teleop extends LinearOpMode
         double driveSpeed = 1;
         boolean wobbleLock = false;
         boolean midLock = false;
+        boolean mediumDrive = false;
 
         if (Hardware.fromAuto)
             robot.resetOdometry(Hardware.x + robotWidth/2, Hardware.y + robotLength/2, 0);
@@ -124,11 +125,15 @@ public class Teleop extends LinearOpMode
         while (opModeIsActive())
         {
 
+            if(gamepad1.right_bumper)
+                robot.resetOdometry(0,0,0);
             robot.updatePositionRoadRunner();
             double[] autoLaunch = robot.getFlyWheelAngle(Hardware.SelectedGoal.HIGHGOAL);
             //set drive speed
             if (slowDrive)
                 driveSpeed = .3;
+            else if(mediumDrive)
+                driveSpeed=.6;
             else
                 driveSpeed = 1;
 
@@ -221,6 +226,7 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Red: ", robot.wobbleSensor.red());
             telemetry.addData("Auto Aim", autoAim);
             telemetry.addData("Slow Drive", slowDrive);
+            telemetry.addData("Trackwidth", Hardware.trackwidth);
             telemetry.addData("Left Speed", robot.flywheelMotorLeft.getVelocity());
             telemetry.addData("Right Speed", robot.flywheelMotorRight.getVelocity());
             telemetry.addData("Angle Servo", servoPosition);
@@ -307,19 +313,11 @@ public class Teleop extends LinearOpMode
             else
                 robot.clawServoLeftClose();
 
-            if (gamepad1.a && !a1Pressed && !gamepad1.start)
-            {
-                autoAim = !autoAim;
-                a1Pressed = true;
-            }
-            if (!gamepad1.a)
-            {
 
-                a1Pressed = false;
-
-            }
             if (gamepad1.b && !b1Pressed && !gamepad1.start)
             {
+
+                mediumDrive=false;
                 slowDrive = !slowDrive;
                 b1Pressed = true;
             }
@@ -327,6 +325,18 @@ public class Teleop extends LinearOpMode
             {
 
                 b1Pressed = false;
+
+            }
+            if (gamepad1.a && !a1Pressed && !gamepad1.start)
+            {
+                slowDrive=false;
+                mediumDrive=!mediumDrive;
+                a1Pressed = true;
+            }
+            if (!gamepad1.a)
+            {
+
+                a1Pressed = false;
 
             }
 
