@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -422,7 +423,7 @@ public class Hardware {
      * */
     public void setIntakePower(double power)
     {
-
+        
         intakeMotor.setPower(power);
         intakeServo.setPower(power);
 
@@ -459,7 +460,7 @@ public class Hardware {
     */
     public void leftWobbleGoalUp()
     {
-        leftWobbleGoal.setPosition(0.35);
+        leftWobbleGoal.setPosition(0.39);
     }
 
     /**
@@ -480,7 +481,7 @@ public class Hardware {
 
     public void leftWobbleGoalMid()
     {
-        leftWobbleGoal.setPosition(.7);
+        leftWobbleGoal.setPosition(.75);
     }
 
     /**
@@ -595,33 +596,33 @@ public class Hardware {
         {
 
             case LOWGOAL:
-                xGoal=-144;
-                yGoal=-36;
+                xGoal=144;
+                yGoal=36;
                 zGoal=17;
                 break;
             case MIDGOAL:
-                xGoal=-144;
-                yGoal=-36;
+                xGoal=144;
+                yGoal=36;
                 zGoal=27.0625;
                 break;
             case HIGHGOAL:
-                xGoal=-144;
-                yGoal=-36;
+                xGoal=144;
+                yGoal=36;
                 zGoal=35.875;
                 break;
             case POWERSHOTONE:
-                xGoal=-144;
-                yGoal=-54;
+                xGoal=144;
+                yGoal=54;
                 zGoal=30.875;
                 break;
             case POWERSHOTTWO:
-                xGoal=-144;
-                yGoal=-61.5;
+                xGoal=144;
+                yGoal=61.5;
                 zGoal=30.875;
                 break;
             case POWERSHOTTHREE:
-                x=-144;
-                yGoal=-69;
+                x=144;
+                yGoal=69;
                 zGoal=30.875;
                 break;
 
