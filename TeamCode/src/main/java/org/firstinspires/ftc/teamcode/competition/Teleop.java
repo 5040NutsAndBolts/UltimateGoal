@@ -228,7 +228,7 @@ public class Teleop extends LinearOpMode
             telemetry.update();
 
 
-            if (servoPosition<.47&&servoPosition>.42)//45, 43
+            if (servoPosition<.45&&servoPosition>.43)//45, 43
             {
                 robot.greenLED.setState(true);
                 robot.redLED.setState(false);
@@ -237,6 +237,17 @@ public class Teleop extends LinearOpMode
             {
                 robot.greenLED.setState(false);
                 robot.redLED.setState(true);
+
+            }
+            if (servoPosition<.46&&servoPosition>.44)//45, 43
+            {
+                robot.powerShotGreenLED.setState(true);
+                robot.powerShotRedLED.setState(false);
+
+            }else
+            {
+                robot.powerShotGreenLED.setState(false);
+                robot.powerShotRedLED.setState(true);
 
             }
 
