@@ -159,6 +159,9 @@ public class Hardware {
     public DigitalChannel redLED;
     public DigitalChannel greenLED;
 
+    public DigitalChannel powerShotRedLED;
+    public DigitalChannel powerShotGreenLED;
+
     //Webcam
     public WebcamName webcam;
     //Tensorflow
@@ -242,6 +245,12 @@ public class Hardware {
 
         redLED = hwMap.get(DigitalChannel.class, "red");
         greenLED = hwMap.get(DigitalChannel.class, "green");
+        redLED.setMode(DigitalChannel.Mode.OUTPUT);
+        greenLED.setMode(DigitalChannel.Mode.OUTPUT);
+        powerShotRedLED = hwMap.get(DigitalChannel.class, "powerShotRed");
+        powerShotGreenLED = hwMap.get(DigitalChannel.class, "powerShotGreen");
+        powerShotRedLED.setMode(DigitalChannel.Mode.OUTPUT);
+        powerShotGreenLED.setMode(DigitalChannel.Mode.OUTPUT);
 
 
         //tensorflow object detection
