@@ -59,6 +59,8 @@ public class Hardware {
 
     }
 
+    public String webcamName;
+
     public static boolean fromAuto=false;
 
     //Positions of the odometry wheels
@@ -238,8 +240,9 @@ public class Hardware {
 
         flicker = hwMap.servo.get("flicker");
 
+        webcamName="Webcam 1";
         //Webcam
-        webcam = hwMap.get(WebcamName.class, "Webcam 1");
+        webcam = hwMap.get(WebcamName.class, webcamName);
 
         wobbleSensor = hwMap.get(ColorSensor.class,"wobbleSensor");
 

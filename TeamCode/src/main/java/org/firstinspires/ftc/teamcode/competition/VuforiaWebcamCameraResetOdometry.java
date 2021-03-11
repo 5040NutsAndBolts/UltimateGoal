@@ -106,6 +106,16 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
     public class VuforiaWebcamCameraResetOdometry{
 
+        Hardware robot;
+
+        public VuforiaWebcamCameraResetOdometry(Hardware r)
+        {
+
+            robot=r;
+
+        }
+
+
         // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
         private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
         private static final boolean PHONE_IS_PORTRAIT = false  ;
@@ -157,24 +167,23 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
             /*
              * Retrieve the camera we are to use.
              */
-            webcamName = hwMap.get(WebcamName.class, "Webcam 1");
+            webcamName = robot.webcam;
 
             /*
              * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
              * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
              * If no camera monitor is desired, use the parameter-less constructor instead (commented out below).
              */
-            int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-            VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+            int cameraMonitorViewId = robot.tfodMonitorViewId;
 
-            // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+             VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
             parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
             /**
              * We also indicate which camera on the RC we wish to use.
              */
-            parameters.cameraName = webcamName;
+            parameters.cameraName = robot.webcam;
 
             // Make sure extended tracking is disabled for this example.
             parameters.useExtendedTracking = false;
@@ -265,9 +274,9 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
             // Next, translate the camera lens to where it is on the robot.
             // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-            final float CAMERA_FORWARD_DISPLACEMENT = 6.625f * mmPerInch;   // eg: Camera is 4 Inches in front of robot center
+            final float CAMERA_FORWARD_DISPLACEMENT = 6.625f * mmPerInch;   // eg: Camera is 6.625 Inches in front of robot center
             final float CAMERA_VERTICAL_DISPLACEMENT = 14.5f * mmPerInch;   // eg: Camera is 14.5 Inches above ground
-            final float CAMERA_LEFT_DISPLACEMENT = -4.1875f * mmPerInch;     // eg: Camera is ON the robot's center line
+            final float CAMERA_LEFT_DISPLACEMENT = -4.1875f * mmPerInch;     // eg: Camera is not on the robot's center line
 
             OpenGLMatrix robotFromCamera = OpenGLMatrix
                     .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
@@ -316,25 +325,27 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
                 if (targetVisible) {
                     // express position (translation) of robot in inches.
                     VectorF translation = lastLocation.getTranslation();
-                    VuOdomResetX = -1*(72 + translation.get(0)/mmPerInch);
-                    VuOdomResetY =  -1*(72 + translation.get(1)/mmPerInch);
-                    VuOdomResetTheta = translation.get(2);
+                    VuOdomResetX = (translation.get(0)/mmPerInch);
+                    VuOdomResetY =  -72 - (translation.get(1)/mmPerInch);
+                    VuOdomResetTheta = (Math.PI/180)*(translation.get(2));
                    // telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                      //       -1*(72 + translation.get(0)/mmPerInch), -1*(72 + translation.get(1)/mmPerInch), translation.get(2)/mmPerInch);
 
                     // express the rotation of the robot in degrees.
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
                   /*  telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                }
+                }*/}
                 else {
-                    telemetry.addData("Visible Target", "none");
+                    //VuOdomResetX = 0;
+                   // VuOdomResetY = 0;
+                    //telemetry.addData("Visible Target", "none");
                 }
-                telemetry.update();
+                //telemetry.update();
             }
-*/
+
             // Disable Tracking when we are done;
             //targetsUltimateGoal.deactivate();
-        }}}
+        }
 
 
 

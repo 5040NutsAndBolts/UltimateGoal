@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
+import org.firstinspires.ftc.teamcode.competition.Hardware;
+
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 
 import org.firstinspires.ftc.teamcode.helperclasses.HelperMethods;
 import org.firstinspires.ftc.teamcode.helperclasses.LQR;
@@ -34,7 +37,7 @@ public class Teleop extends LinearOpMode
         Hardware robot = new Hardware();
         robot.init(hardwareMap);
         final LQR lqr = new LQR(robot);
-        VuforiaWebcamCameraResetOdometry vuWebcamReset = new VuforiaWebcamCameraResetOdometry();
+        VuforiaWebcamCameraResetOdometry vuWebcamReset = new VuforiaWebcamCameraResetOdometry(robot);
         List<VuforiaTrackable> trythistho = new ArrayList<VuforiaTrackable>();
         trythistho = vuWebcamReset.initVuReset();
 
@@ -124,8 +127,7 @@ public class Teleop extends LinearOpMode
         while (opModeIsActive())
         {
 
-            if(gamepad1.right_bumper)
-                robot.resetOdometry(0,0,0);
+
             robot.updatePositionRoadRunner();
             double[] autoLaunch = robot.getFlyWheelAngle(Hardware.SelectedGoal.HIGHGOAL);
             //set drive speed
@@ -328,7 +330,7 @@ public class Teleop extends LinearOpMode
                 OdomResetX = -1*(72 + VuforiaWebcamCameraResetOdometry.VuOdomResetX);
                 OdomResetY = -1*(72 + VuforiaWebcamCameraResetOdometry.VuOdomResetY);
                 OdomResetTheta = VuforiaWebcamCameraResetOdometry.VuOdomResetTheta;
-                robot.resetOdometry(OdomResetX, OdomResetY, OdomResetTheta);
+                robot.resetOdometry(OdomResetX, OdomResetY, Hardware.theta);
             }
 
             if (leftClawOpen)
